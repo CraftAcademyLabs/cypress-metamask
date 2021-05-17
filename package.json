@@ -1,0 +1,47 @@
+{
+  "name": "cypress-metamask",
+  "version": "0.0.1",
+  "main": "support/commands.js",
+  "license": "MIT",
+  "keywords": [
+    "Cypress",
+    "Testing",
+    "EthersJS",
+    "Smart Contracts",
+    "Blockchain",
+    "MetaMask",
+    "Utils"
+  ],
+  "standard": {
+    "env": [
+      "cypress/globals"
+    ],
+    "parser": "babel-eslint",
+    "plugins": [
+      "cypress"
+    ]
+  },
+  "scripts": {
+    "start": "superstatic src",
+    "start:silent": "BROWSER=none superstatic src",
+    "cy:open": "CYPRESS_REMOTE_DEBUGGING_PORT=9222 cypress open",
+    "cy:run": "CYPRESS_REMOTE_DEBUGGING_PORT=9222 cypress run --headed --browser chrome",
+    "test:e2e": "start-server-and-test  http://localhost:3000 && cy:run",
+    "test:e2e:dev": "start-server-and-test start:silent http://localhost:3474 cy:open"
+  },
+  "dependencies": {
+    "cypress-metamask": "file:./"
+  },
+  "devDependencies": {
+    "cross-zip": "^4.0.0",
+    "cypress": "^7.3.0",
+    "dotenv": "^9.0.2",
+    "eslint-plugin-cypress": "^2.11.3",
+    "ethers": "^5.1.4",
+    "node-fetch": "^2.6.1",
+    "puppeteer-core": "^9.1.1",
+    "standard": "^16.0.3",
+    "start-server-and-test": "^1.12.2",
+    "superstatic": "^7.1.0"
+  }
+}

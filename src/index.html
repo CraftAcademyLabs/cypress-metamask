@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <h1>MetaMask Demo</h1>
+  <div id="message"></div>
+  <script src="https://cdn.ethers.io/lib/ethers-5.0.umd.min.js" type="application/javascript"></script>
+  <script src="https://unpkg.com/@metamask/detect-provider/dist/detect-provider.min.js"></script>
+
+
+  <script type="module">
+    const provider = await detectEthereumProvider()
+    const messageNode = document.getElementById('message')
+    const { ethers } = window.ethers
+
+    if (provider) {
+      // await window.ethereum.enable()
+      const web3Provider = new ethers.providers.Web3Provider(window.ethereum)
+      // debugger
+      let balance = await web3Provider.getBalance(window.ethereum.selectedAddress);
+      messageNode.innerHTML = `<h3 data-cy="title">MetaMask Detected</h3> <p data-cy="address">Your address is: ${window.ethereum.selectedAddress}</><p data-cy="balance">Balance ${balance}`
+    } else {
+      messageNode.innerText = "No MetaMask Detected - please install the extension"
+    }
+  </script>
+</body>
+
+</html>
