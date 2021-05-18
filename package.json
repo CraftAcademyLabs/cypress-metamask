@@ -1,6 +1,6 @@
 {
   "name": "cypress-metamask",
-  "version": "0.0.1-development",
+  "version": "1.0.1-development",
   "main": "support/commands.js",
   "license": "MIT",
   "keywords": [
