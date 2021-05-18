@@ -1204,7 +1204,7 @@ crypto-random-string@^2.0.0:
 "cypress-metamask@file:.":
   version "0.0.1"
   dependencies:
-    cypress-metamask "file:../../Library/Caches/Yarn/v6/npm-cypress-metamask-0.0.1-b6120287-b1aa-4d47-b6a1-cee2f8518cca-1621289667093/node_modules/cypress-metamask"
+    cypress-metamask "file:../../Library/Caches/Yarn/v6/npm-cypress-metamask-0.0.1-b87b4613-de42-4af2-b349-e0b74982e847-1621325365793/node_modules/cypress-metamask"
 
 cypress@^7.3.0:
   version "7.3.0"
@@ -3661,24 +3661,6 @@ puppeteer-core@^9.1.1:
   version "9.1.1"
   resolved "https://registry.yarnpkg.com/puppeteer-core/-/puppeteer-core-9.1.1.tgz#0c189c3275967d65c39270e6b146e559baca3d47"
   integrity sha512-zbedbitVIGhmgz0nt7eIdLsnaoVZSlNJfBivqm2w67T8LR2bU1dvnruDZ8nQO0zn++Iet7zHbAOdnuS5+H2E7A==
-  dependencies:
-    debug "^4.1.0"
-    devtools-protocol "0.0.869402"
-    extract-zip "^2.0.0"
-    https-proxy-agent "^5.0.0"
-    node-fetch "^2.6.1"
-    pkg-dir "^4.2.0"
-    progress "^2.0.1"
-    proxy-from-env "^1.1.0"
-    rimraf "^3.0.2"
-    tar-fs "^2.0.0"
-    unbzip2-stream "^1.3.3"
-    ws "^7.2.3"
-
-puppeteer@^9.1.1:
-  version "9.1.1"
-  resolved "https://registry.yarnpkg.com/puppeteer/-/puppeteer-9.1.1.tgz#f74b7facf86887efd6c6b9fabb7baae6fdce012c"
-  integrity sha512-W+nOulP2tYd/ZG99WuZC/I5ljjQQ7EUw/jQGcIb9eu8mDlZxNY2SgcJXTLG9h5gRvqA3uJOe4hZXYsd3EqioMw==
   dependencies:
     debug "^4.1.0"
     devtools-protocol "0.0.869402"

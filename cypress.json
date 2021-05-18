@@ -1,1 +1,4 @@
-{}
+{
+  "baseUrl": "http://localhost:3474",
+  "chromeWebSecurity": true
+}
