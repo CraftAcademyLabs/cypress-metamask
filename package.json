@@ -1,6 +1,6 @@
 {
   "name": "cypress-metamask",
-  "version": "0.0.1",
+  "version": "0.0.0-development",
   "main": "support/commands.js",
   "license": "MIT",
   "keywords": [
@@ -27,12 +27,10 @@
     "cy:open": "CYPRESS_REMOTE_DEBUGGING_PORT=9222 cypress open",
     "cy:run": "CYPRESS_REMOTE_DEBUGGING_PORT=9222 cypress run --headed --browser chrome",
     "test:e2e": "start-server-and-test http://localhost:3000 & yarn cy:run",
-    "test:e2e:dev": "start-server-and-test http://localhost:3474 & yarn cy:open"
+    "test:e2e:dev": "start-server-and-test http://localhost:3474 & yarn cy:open",
+    "semantic-release": "GH_TOKEN=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 semantic-release"
   },
   "dependencies": {
-    "cypress-metamask": "file:./"
-  },
-  "devDependencies": {
     "cross-zip": "^4.0.0",
     "cypress": "^7.3.0",
     "dotenv": "^9.0.2",
@@ -42,6 +40,13 @@
     "puppeteer-core": "^9.1.1",
     "standard": "^16.0.3",
     "start-server-and-test": "^1.12.2",
-    "superstatic": "^7.1.0"
+    "superstatic": "^7.1.0",
+    "semantic-release": "^17.4.3"
+  },
+  "devDependencies": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CraftAcademyLabs/cypress-metamask.git"
   }
 }
