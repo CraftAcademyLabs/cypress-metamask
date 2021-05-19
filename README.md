@@ -6,6 +6,8 @@ This plugin is based on the solutions brought by [Jakub Mucha - drptbl](https://
 
 ### Setup
 
+**Note:** This plugin is in development mode. You might encounter bugs and you will have to tweak your implementation a bit before you get it to work. But it is worth your effort in my opinon. Being able to run automated tests of your application is a good thing. ;-)
+
 Install the package using `yarn` or `npm`:
 
 ```bash
@@ -46,12 +48,21 @@ CYPRESS_REMOTE_DEBUGGING_PORT=9222
 
 ## Example
 
-There is a small html/javascript that requires you to run a local chain to work. Once you have configured your setup and if you spin up a local chain, start a server and run your tests, you should be able to have the test pass.
+There is a small html/javascript (src/index.html) example that requires you to run a local chain to work. It uses the connected wallet to display its address and balance. 
+
+Once you have configured your setup and if you spin up a local chain, start a server and run your tests, you should be able to have the test pass.
+
+Step-by-step
+
+1. Start your local chain
+2. Start a local web server (`yarn start`) and navitate to `http://localhost:3473`
+3. Run Cypress (`yarn cy:open`) 
 
 ```js
 describe('User can load page', () => {
   before(() => {
     cy.setupMetamask();
+    cy.changeMetamaskNetwork('localhost')
     cy.visit('/')
   });
   it('is expected to display a sussess message', () => {

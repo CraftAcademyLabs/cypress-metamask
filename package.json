@@ -1,6 +1,6 @@
 {
   "name": "cypress-metamask",
-  "version": "1.0.1-development",
+  "version": "1.0.2-development",
   "main": "support/commands.js",
   "license": "MIT",
   "keywords": [
@@ -26,9 +26,7 @@
     "start:silent": "BROWSER=none superstatic src",
     "cy:open": "CYPRESS_REMOTE_DEBUGGING_PORT=9222 cypress open",
     "cy:run": "CYPRESS_REMOTE_DEBUGGING_PORT=9222 cypress run --headed --browser chrome",
-    "test:e2e": "start-server-and-test http://localhost:3000 & yarn cy:run",
-    "test:e2e:dev": "start-server-and-test http://localhost:3474 & yarn cy:open",
-    "semantic-release": "GH_TOKEN=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 semantic-release"
+    "semantic-release": "semantic-release"
   },
   "dependencies": {
     "cross-zip": "^4.0.0",
