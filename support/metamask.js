@@ -37,22 +37,19 @@ module.exports = {
       }
     }
   },
-  async changeAccount() {
+  async changeAccount(number) {
     await puppeteer.waitAndClick(mainPageElements.accountMenu.button)
-    await puppeteer.changeAccount()
-
+    console.log("in metamask.js: " + number)
+    await puppeteer.changeAccount(number)
   },
 
   async importMetaMaskWalletUsingPrivateKey(key) {
-    // interact with the MM extension
     await puppeteer.waitAndClick(mainPageElements.accountMenu.button);
     await puppeteer.waitAndClickByText('.account-menu__item__text', 'Import Account');
-    console.log('Clicked on Import Account');
     await puppeteer.waitAndType('#private-key-box', key);
-    await puppeteer.waitAndClick('.new-account-create-form__button');
-    await puppeteer.waitAndClick(mainPageElements.accountMenu.importAccount);
+    await puppeteer.metamaskWindow().waitForTimeout(500);
+    await puppeteer.waitAndClickByText(mainPageElements.accountMenu.importButton, 'Import');
     await puppeteer.metamaskWindow().waitForTimeout(2000);
-
     return true;
 },
 

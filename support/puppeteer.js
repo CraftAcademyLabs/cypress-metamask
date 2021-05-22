@@ -68,22 +68,22 @@ module.exports = {
     }
   },
   async waitFor(selector, page = metamaskWindow) {
-    console.log('inside waitFor')
     console.log(selector)
-
-
     await page.waitForFunction(
       `document.querySelector('${selector}') && document.querySelector('${selector}').clientHeight != 0`,
       { visible: true },
     );
-    console.log('inside waitFor - GOT true')
     // puppeteer going too fast breaks metamask in corner cases
     await page.waitForTimeout(300);
   },
 
-  async changeAccount(page = metamaskWindow) {
+  async changeAccount(number, page = metamaskWindow) {
     await page.evaluate(
-      () => document.querySelector('.account-menu__accounts').children[1].click()
+      ({ number }) => {
+        const selector = document.querySelector('.account-menu__accounts').children[number.number - 1]
+        selector.click()
+      },
+      { number }
     )
   },
 
@@ -108,7 +108,7 @@ module.exports = {
       { elementText, selector }
     );
   },
-  
+
   async waitAndType(selector, value, page = metamaskWindow) {
     await module.exports.waitFor(selector, page);
     const element = await page.$(selector);

@@ -83,7 +83,9 @@ Cypress.Commands.add('getNetwork', () => {
   return cy.task('getNetwork');
 });
 
-Cypress.Commands.add('changeAccount', () => {
-  return cy.task('changeAccount')
-})
+Cypress.Commands.add(
+  'changeAccount',
+  (number) => {
+    return cy.task('changeAccount', { number })
+  })
 
