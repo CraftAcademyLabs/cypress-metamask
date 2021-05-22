@@ -97,29 +97,18 @@ module.exports = {
 
   async waitAndClickByText(selector, elementText, page = metamaskWindow) {
     await module.exports.waitFor(selector, page);
-    console.log("Selector: " + selector)
-    console.log("Text: " + elementText)
-    await page.evaluate(async () => {
-      console.log('Waiting')
-      // await page.waitForTimeout(1000);
-      console.log('Done waiting')
-      console.log(document.querySelectorAll('.account-menu__item__text'))
-
-      const selectors = document.querySelectorAll('.account-menu__item__text')
-      const importNode = Array.from(selectors).find(selector => selector.innerText === "Import Account")
-      importNode.click()
-
-      // console.log("My selector " + selector)
-      // const selectors = [...document.querySelectorAll(selector)]
-      // console.table("What The Fox??? " + selectors)
-      // return selectors
-      //   .find(element => {
-      //     console.log(element.textContent)
-      //     element.textContent === elementText
-      //   })
-      //   .click();
-    });
+    await page.evaluate(
+      ({ elementText, selector }) => {
+        const selectors = document.querySelectorAll(selector);
+        const importNode = Array.from(selectors).find(
+          (selector) => selector.innerText === elementText
+        );
+        importNode.click();
+      },
+      { elementText, selector }
+    );
   },
+  
   async waitAndType(selector, value, page = metamaskWindow) {
     await module.exports.waitFor(selector, page);
     const element = await page.$(selector);
