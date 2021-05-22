@@ -68,10 +68,15 @@ module.exports = {
     }
   },
   async waitFor(selector, page = metamaskWindow) {
+    console.log('inside waitFor')
+    console.log(selector)
+
+
     await page.waitForFunction(
       `document.querySelector('${selector}') && document.querySelector('${selector}').clientHeight != 0`,
       { visible: true },
     );
+    console.log('inside waitFor - GOT true')
     // puppeteer going too fast breaks metamask in corner cases
     await page.waitForTimeout(300);
   },
@@ -90,13 +95,29 @@ module.exports = {
     );
   },
 
-  async waitAndClickByText(selector, text, page = metamaskWindow) {
-    console.log('inside waitAndClickByText')
+  async waitAndClickByText(selector, elementText, page = metamaskWindow) {
     await module.exports.waitFor(selector, page);
-    await page.evaluate((selector, text) => {      
-      return [...document.querySelectorAll(selector)]
-        .find(element => element.textContent === text)
-        .click();
+    console.log("Selector: " + selector)
+    console.log("Text: " + elementText)
+    await page.evaluate(async () => {
+      console.log('Waiting')
+      // await page.waitForTimeout(1000);
+      console.log('Done waiting')
+      console.log(document.querySelectorAll('.account-menu__item__text'))
+
+      const selectors = document.querySelectorAll('.account-menu__item__text')
+      const importNode = Array.from(selectors).find(selector => selector.innerText === "Import Account")
+      importNode.click()
+
+      // console.log("My selector " + selector)
+      // const selectors = [...document.querySelectorAll(selector)]
+      // console.table("What The Fox??? " + selectors)
+      // return selectors
+      //   .find(element => {
+      //     console.log(element.textContent)
+      //     element.textContent === elementText
+      //   })
+      //   .click();
     });
   },
   async waitAndType(selector, value, page = metamaskWindow) {

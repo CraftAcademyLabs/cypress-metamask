@@ -48,12 +48,10 @@ module.exports = {
     console.log('In Metamask.js:' + key)
 
     await puppeteer.waitAndClick(mainPageElements.accountMenu.button);
-    console.log('Opened the menu')
-    // TODO: We are stopping here!!!
     await puppeteer.waitAndClickByText('.account-menu__item__text', 'Import Account')
     console.log('Clicked on Import Account')
     // await puppeteer.waitAndClick(mainPageElements.accountMenu.importAccount); 
-    await puppeteer.waitAndType('#private-key-box', key)
+    // await puppeteer.waitAndType('#private-key-box', key)
     await puppeteer.waitAndClick('.new-account-create-form__button')
     return true
   },
