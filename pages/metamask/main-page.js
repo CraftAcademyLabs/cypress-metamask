@@ -18,7 +18,8 @@ const accountMenu = {
   firstAccount: '.account-menu__accounts:nth-child(1)',
   secondAccount: '.account-menu__accounts:nth-child(2)',
   accountsSelector: '.account-menu__name',
-  importAccount: '.account-menu__item account-menu__item--clickable'
+  importAccount: '.account-menu__item account-menu__item--clickable',
+  importButton: '.new-account-create-form__button'
 };
 
 const settingsPage = {

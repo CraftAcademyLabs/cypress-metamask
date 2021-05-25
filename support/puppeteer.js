@@ -30,7 +30,6 @@ module.exports = {
   async assignWindows() {
     let pages = await puppeteerBrowser.pages();
     for (const page of pages) {
-      console.log(page.url())
       if (page.url().includes('integration')) {
         mainWindow = page;
       } else if (page.url().includes('extension')) {
@@ -76,9 +75,13 @@ module.exports = {
     await page.waitForTimeout(300);
   },
 
-  async changeAccount(page = metamaskWindow) {
+  async changeAccount(number, page = metamaskWindow) {
     await page.evaluate(
-      () => document.querySelector('.account-menu__accounts').children[1].click()
+      ({ number }) => {
+        const selector = document.querySelector('.account-menu__accounts').children[number.number - 1]
+        selector.click()
+      },
+      { number }
     )
   },
 
@@ -90,15 +93,20 @@ module.exports = {
     );
   },
 
-  async waitAndClickByText(selector, text, page = metamaskWindow) {
-    console.log('inside waitAndClickByText')
+  async waitAndClickByText(selector, elementText, page = metamaskWindow) {
     await module.exports.waitFor(selector, page);
-    await page.evaluate((selector, text) => {      
-      return [...document.querySelectorAll(selector)]
-        .find(element => element.textContent === text)
-        .click();
-    });
+    await page.evaluate(
+      ({ elementText, selector }) => {
+        const selectors = document.querySelectorAll(selector);
+        const importNode = Array.from(selectors).find(
+          (selector) => selector.innerText === elementText
+        );
+        importNode.click();
+      },
+      { elementText, selector }
+    );
   },
+
   async waitAndType(selector, value, page = metamaskWindow) {
     await module.exports.waitFor(selector, page);
     const element = await page.$(selector);
