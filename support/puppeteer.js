@@ -30,7 +30,6 @@ module.exports = {
   async assignWindows() {
     let pages = await puppeteerBrowser.pages();
     for (const page of pages) {
-      console.log(page.url())
       if (page.url().includes('integration')) {
         mainWindow = page;
       } else if (page.url().includes('extension')) {
@@ -68,7 +67,6 @@ module.exports = {
     }
   },
   async waitFor(selector, page = metamaskWindow) {
-    console.log(selector)
     await page.waitForFunction(
       `document.querySelector('${selector}') && document.querySelector('${selector}').clientHeight != 0`,
       { visible: true },

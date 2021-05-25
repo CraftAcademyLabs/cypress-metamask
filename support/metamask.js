@@ -39,7 +39,6 @@ module.exports = {
   },
   async changeAccount(number) {
     await puppeteer.waitAndClick(mainPageElements.accountMenu.button)
-    console.log("in metamask.js: " + number)
     await puppeteer.changeAccount(number)
   },
 
