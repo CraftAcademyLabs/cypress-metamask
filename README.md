@@ -34,6 +34,8 @@ module.exports = (on, config) => {
 
 Add an `.env` file to your project root:
 
+**These settings are for a [Hardhat](https://hardhat.org/) development environment**. You will need to tweak those setting depending on the enviroment you use.
+
 ```
 SECRET_WORDS="test test test test test test test test test test test junk"
 PASSWORD=TestMetaMask
@@ -41,7 +43,12 @@ METAMASK_VERSION=latest
 NETWORK_NAME=localhost 
 RPC_URL=http://127.0.0.1:8545/ 
 CHAIN_ID=1337
-CYPRESS_REMOTE_DEBUGGING_PORT=9222
+```
+
+Add these scripts to your `package.json` (or modify your existing scripts): 
+
+```json
+"cy:open": "CYPRESS_REMOTE_DEBUGGING_PORT=9222 cypress open"
 ```
 
 **You should be ready to go.** 

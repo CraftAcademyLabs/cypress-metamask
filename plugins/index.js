@@ -95,7 +95,9 @@ module.exports = (on, config) => {
       return imported;
     },
     async importMetaMaskWalletUsingPrivateKey({ key }) {
+      await puppeteer.switchToMetamaskWindow();
       const imported = await metamask.importMetaMaskWalletUsingPrivateKey(key);
+      await puppeteer.switchToMetamaskWindow();
       return imported
     },
     
@@ -132,21 +134,28 @@ module.exports = (on, config) => {
       return metamask.walletAddress();
     },
     async setupMetamask({ secretWords, network, password }) {
-      if (process.env.NETWORK_NAME) {
-        network = process.env.NETWORK_NAME;
+      if (puppeteer.metamaskWindow()) {
+        await puppeteer.switchToCypressWindow();
+        return true
+      } else {
+        if (process.env.NETWORK_NAME) {
+          network = process.env.NETWORK_NAME;
+        }
+        if (process.env.SECRET_WORDS) {
+          secretWords = process.env.SECRET_WORDS;
+        }
+        if (process.env.PASSWORD) {
+          password = process.env.PASSWORD;
+        }
+        await metamask.initialSetup({ secretWords, network, password });
+        return true;
       }
-      if (process.env.SECRET_WORDS) {
-        secretWords = process.env.SECRET_WORDS;
-      }
-      if (process.env.PASSWORD) {
-        password = process.env.PASSWORD;
-      }
-      await metamask.initialSetup({ secretWords, network, password });
-      return true;
     },
 
     async changeAccount(number) {
-      const accountChange = await metamask.changeAccount(number)
+      await puppeteer.switchToMetamaskWindow();
+      await metamask.changeAccount(number);
+      await puppeteer.switchToCypressWindow();
       return null
     },
 
