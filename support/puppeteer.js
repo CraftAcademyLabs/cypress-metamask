@@ -38,6 +38,10 @@ module.exports = {
     }
     return true;
   },
+  clearWindows() {
+    mainWindow = null;
+    metamaskWindow = null;
+  },
   async getBrowser() {
     return {
       puppeteerBrowser,

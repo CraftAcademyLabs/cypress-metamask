@@ -61,6 +61,10 @@ module.exports = (on, config) => {
       const assigned = await puppeteer.assignWindows();
       return assigned;
     },
+    clearWindows() {
+      puppeteer.clearWindows();
+      return true;
+    },
     async switchToCypressWindow() {
       const switched = await puppeteer.switchToCypressWindow();
       return switched;
@@ -100,7 +104,7 @@ module.exports = (on, config) => {
       await puppeteer.switchToMetamaskWindow();
       return imported
     },
-    
+
     async addMetamaskNetwork(network) {
       const networkAdded = await metamask.addNetwork(network);
       return networkAdded;
