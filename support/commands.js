@@ -18,6 +18,13 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add(
+  'disconnectMetamaskWallet',
+  () => {
+    return cy.task('disconnectMetamaskWallet');
+  },
+);
+
+Cypress.Commands.add(
   'importMetaMaskWalletUsingPrivateKey',
   (key) => {
     return cy.task('importMetaMaskWalletUsingPrivateKey', { key });
@@ -88,4 +95,3 @@ Cypress.Commands.add(
   (number) => {
     return cy.task('changeAccount', { number })
   })
-

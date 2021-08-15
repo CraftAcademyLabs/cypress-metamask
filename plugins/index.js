@@ -4,6 +4,7 @@ require('dotenv').config()
 const helpers = require('../support/helpers')
 const puppeteer = require('../support/puppeteer');
 const metamask = require('../support/metamask');
+const { disconnectWallet } = require('../support/metamask');
 /**
  * @type {Cypress.PluginConfig}
  */
@@ -97,6 +98,10 @@ module.exports = (on, config) => {
       }
       const imported = await metamask.importWallet(secretWords, password);
       return imported;
+    },
+    async disconnectMetamaskWallet() {
+      await metamask.disconnectWallet();
+      return true
     },
     async importMetaMaskWalletUsingPrivateKey({ key }) {
       await puppeteer.switchToMetamaskWindow();
