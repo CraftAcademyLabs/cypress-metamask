@@ -95,9 +95,6 @@ module.exports = {
     }
     return true;
   },
-
-
-
   async changeNetwork(network) {
     setNetwork(network);
     await puppeteer.waitAndClick(mainPageElements.networkSwitcher.button);
@@ -293,4 +290,15 @@ module.exports = {
       return true;
     }
   },
+  async disconnectWallet() {
+    await puppeteer.switchToMetamaskWindow();
+
+    await puppeteer.waitAndClick(mainPageElements.options.button);
+    await puppeteer.waitAndClick(mainPageElements.options.connectedSitesButton);
+    await puppeteer.waitAndClick(mainPageElements.connectedSites.disconnectButton);
+    await puppeteer.waitAndClickByText('.btn-primary', 'Disconnect');
+
+    await puppeteer.switchToCypressWindow();
+    return true;
+  }
 };
