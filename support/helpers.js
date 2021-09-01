@@ -86,4 +86,11 @@ module.exports = {
     await module.exports.extract(downloadDestination, metamaskDirectory);
     return metamaskDirectory;
   },
+  interactionLog(message) {
+    let verboseFlag = process.env['VERBOSE']
+    const verboseMode = parseInt(verboseFlag) || verboseFlag === 'true';
+    if (verboseMode) {
+      console.log(message);
+    }
+  },
 };

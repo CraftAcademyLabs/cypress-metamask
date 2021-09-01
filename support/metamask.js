@@ -15,7 +15,7 @@ const {
   permissionsPageElements,
   confirmPageElements,
 } = require('../pages/metamask/notification-page');
-const { setNetwork, getNetwork } = require('./helpers');
+const { setNetwork, getNetwork, interactionLog } = require('./helpers');
 
 let walletAddress;
 
@@ -38,11 +38,13 @@ module.exports = {
     }
   },
   async changeAccount(number) {
+    interactionLog('changing account')
     await puppeteer.waitAndClick(mainPageElements.accountMenu.button)
     await puppeteer.changeAccount(number)
   },
 
   async importMetaMaskWalletUsingPrivateKey(key) {
+    interactionLog('importing wallet from private key')
     await puppeteer.waitAndClick(mainPageElements.accountMenu.button);
     await puppeteer.waitAndClickByText('.account-menu__item__text', 'Import Account');
     await puppeteer.waitAndType('#private-key-box', key);
@@ -53,24 +55,29 @@ module.exports = {
 },
 
   async confirmWelcomePage() {
+    interactionLog('confirming welcome page')
     await module.exports.fixBlankPage();
     await puppeteer.waitAndClick(welcomePageElements.confirmButton);
     return true;
   },
 
   async unlock(password) {
+    interactionLog('unlocking')
     await module.exports.fixBlankPage();
     await puppeteer.waitAndType(unlockPageElements.passwordInput, password);
     await puppeteer.waitAndClick(unlockPageElements.unlockButton);
     return true;
   },
   async importWallet(secretWords, password) {
+    interactionLog('importing wallet')
     await puppeteer.waitAndClick(firstTimeFlowPageElements.importWalletButton);
     await puppeteer.waitAndClick(metametricsPageElements.optOutAnalyticsButton);
+    interactionLog('filling in secret words')
     await puppeteer.waitAndType(
       firstTimeFlowFormPageElements.secretWordsInput,
       secretWords,
     );
+    interactionLog('filling in password')
     await puppeteer.waitAndType(
       firstTimeFlowFormPageElements.passwordInput,
       password,
@@ -96,6 +103,7 @@ module.exports = {
     return true;
   },
   async changeNetwork(network) {
+    interactionLog('changing network')
     setNetwork(network);
     await puppeteer.waitAndClick(mainPageElements.networkSwitcher.button);
     if (network === 'main' || network === 'mainnet') {
@@ -149,6 +157,7 @@ module.exports = {
     return true;
   },
   async addNetwork(network) {
+    interactionLog('adding network')
     if (
       process.env.NETWORK_NAME &&
       process.env.RPC_URL &&
@@ -204,6 +213,7 @@ module.exports = {
     return true;
   },
   async acceptAccess() {
+    interactionLog('accepting access')
     await puppeteer.metamaskWindow().waitForTimeout(3000);
     const notificationPage = await puppeteer.switchToMetamaskNotification();
     await puppeteer.waitAndClick(
@@ -218,6 +228,7 @@ module.exports = {
     return true;
   },
   async confirmTransaction() {
+    interactionLog('confirming transaction')
     const isKovanTestnet = getNetwork().networkName === 'kovan';
     await puppeteer.metamaskWindow().waitForTimeout(3000);
     const notificationPage = await puppeteer.switchToMetamaskNotification();
@@ -243,6 +254,7 @@ module.exports = {
     return true;
   },
   async rejectTransaction() {
+    interactionLog('rejecting transaction')
     await puppeteer.metamaskWindow().waitForTimeout(3000);
     const notificationPage = await puppeteer.switchToMetamaskNotification();
     await puppeteer.waitAndClick(
@@ -253,6 +265,7 @@ module.exports = {
     return true;
   },
   async getWalletAddress() {
+    interactionLog('getting wallet address')
     await puppeteer.waitAndClick(mainPageElements.options.button);
     await puppeteer.waitAndClick(mainPageElements.options.accountDetailsButton);
     walletAddress = await puppeteer.waitAndGetValue(
@@ -262,6 +275,7 @@ module.exports = {
     return walletAddress;
   },
   async initialSetup({ secretWords, network, password }) {
+    interactionLog('performing initial setup')
     const isCustomNetwork =
       process.env.NETWORK_NAME && process.env.RPC_URL && process.env.CHAIN_ID;
 
@@ -291,6 +305,7 @@ module.exports = {
     }
   },
   async disconnectWallet() {
+    interactionLog('disconnecting wallet')
     await puppeteer.switchToMetamaskWindow();
 
     await puppeteer.waitAndClick(mainPageElements.options.button);
