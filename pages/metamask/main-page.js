@@ -64,5 +64,6 @@ module.exports.mainPageElements = {
   networksPage,
   addNetworkPage,
   options,
+  connectedSites,
   accountModal,
 };
