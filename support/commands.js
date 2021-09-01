@@ -6,6 +6,10 @@ Cypress.Commands.add('assignWindows', () => {
   return cy.task('assignWindows');
 });
 
+Cypress.Commands.add('clearWindows', () => {
+  return cy.task('clearWindows')
+})
+
 Cypress.Commands.add('confirmMetamaskWelcomePage', () => {
   return cy.task('confirmMetamaskWelcomePage');
 });
