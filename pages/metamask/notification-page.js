@@ -1,5 +1,7 @@
 const notificationPage = '.notification';
 const nextButton = `${notificationPage} .permissions-connect-choose-account__bottom-buttons button:nth-child(2)`;
+const signButton = `${notificationPage} [data-testid="request-signature__sign"]`;
+const cancelSignButton = `${notificationPage} [data-testid="request-signature__footer__cancel-button"]`;
 
 const permissionsPage = '.permissions-connect';
 const connectButton = `${permissionsPage} .permission-approval-container__footers button:nth-child(2)`;
@@ -14,9 +16,12 @@ const totalLabel = `${confirmPageContent} div:nth-child(2) > .confirm-detail-row
 const rejectButton = `${confirmPageContent} [data-testid="page-container-footer-cancel"]`;
 const confirmButton = `${confirmPageContent} [data-testid="page-container-footer-next"]`;
 
+
 module.exports.notificationPageElements = {
   notificationPage,
   nextButton,
+  signButton,
+  cancelSignButton
 };
 
 module.exports.permissionsPageElements = {

@@ -100,7 +100,7 @@ module.exports = (on, config) => {
       await puppeteer.switchToMetamaskWindow();
       return imported
     },
-    
+
     async addMetamaskNetwork(network) {
       const networkAdded = await metamask.addNetwork(network);
       return networkAdded;
@@ -120,6 +120,10 @@ module.exports = (on, config) => {
     },
     async confirmMetamaskTransaction() {
       const confirmed = await metamask.confirmTransaction();
+      return confirmed;
+    },
+    async signMetamaskMessage() {
+      const confirmed = await metamask.signMessage();
       return confirmed;
     },
     async rejectMetamaskTransaction() {
