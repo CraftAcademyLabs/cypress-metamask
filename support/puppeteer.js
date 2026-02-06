@@ -40,7 +40,9 @@ module.exports = {
   /**
    * Assign windows to mainWindow and metamaskWindow variables
    * Identifies windows by URL patterns (integration for main, extension for metamask)
-   * @returns {Promise<boolean>} True if windows assigned successfully
+   * @returns {Promise<boolean>} Always returns true; logs warning if windows not found
+   * @note This function returns true even when windows aren't fully assigned to allow
+   *       graceful degradation. Check console warnings if experiencing issues.
    */
   async assignWindows() {
     let pages = await puppeteerBrowser.pages();

@@ -39,6 +39,8 @@ const parameterizedCommands = [
 parameterizedCommands.forEach(({ name, params }) => {
   Cypress.Commands.add(name, (...args) => {
     // Map arguments to parameter object
+    // If first arg is already an object with the expected keys, use it directly
+    // Otherwise, map positional arguments to named parameters
     const paramObject = params.length === 1 && typeof args[0] === 'object' && !Array.isArray(args[0])
       ? args[0]
       : params.reduce((obj, param, index) => {

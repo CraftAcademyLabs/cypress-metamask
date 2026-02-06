@@ -67,14 +67,13 @@ function getNetworkConfig(network) {
   }
 
   // Search by name or ID
-  for (const [key, config] of Object.entries(NETWORKS)) {
+  for (const config of Object.values(NETWORKS)) {
     if (config.names?.includes(network) || config.id === network) {
       return {
         networkName: config.names[0],
         networkId: config.id,
         isTestnet: config.isTestnet,
         index: config.index,
-        key,
       };
     }
   }

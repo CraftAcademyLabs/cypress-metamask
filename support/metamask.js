@@ -134,18 +134,16 @@ module.exports = {
       );
     } else {
       // For custom networks, click by name
-      const displayName = typeof network === 'object' ? network.networkName : network;
       await puppeteer.waitAndClickByText(
         mainPageElements.networkSwitcher.dropdownMenuItem,
-        displayName,
+        networkConfig.networkName,
       );
     }
 
     // Wait for network name to appear
-    const expectedName = typeof network === 'object' ? network.networkName : networkConfig.networkName;
     await puppeteer.waitForText(
       mainPageElements.networkSwitcher.networkName,
-      expectedName,
+      networkConfig.networkName,
     );
 
     return true;
