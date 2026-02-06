@@ -1,4 +1,5 @@
 const puppeteer = require('./puppeteer');
+const { TIMEOUTS, getNetworkConfig } = require('./constants');
 
 const { pageElements } = require('../pages/metamask/page');
 const {
@@ -20,38 +21,60 @@ const { setNetwork, getNetwork } = require('./helpers');
 let walletAddress;
 
 module.exports = {
+  /**
+   * Get the current wallet address
+   * @returns {string} The wallet address
+   */
   walletAddress: () => {
     return walletAddress;
   },
-  // workaround for metamask random blank page on first run
+  
+  /**
+   * Workaround for MetaMask random blank page on first run
+   * Attempts to reload the page up to 5 times if the welcome page doesn't appear
+   */
   async fixBlankPage() {
-    await puppeteer.metamaskWindow().waitForTimeout(1000);
+    await puppeteer.metamaskWindow().waitForTimeout(TIMEOUTS.MEDIUM);
     for (let times = 0; times < 5; times++) {
       if (
         (await puppeteer.metamaskWindow().$(welcomePageElements.app)) === null
       ) {
         await puppeteer.metamaskWindow().reload();
-        await puppeteer.metamaskWindow().waitForTimeout(2000);
+        await puppeteer.metamaskWindow().waitForTimeout(TIMEOUTS.LONG);
       } else {
         break;
       }
     }
   },
+  
+  /**
+   * Switch to a different MetaMask account
+   * @param {number} number - Account number (1-indexed)
+   */
   async changeAccount(number) {
     await puppeteer.waitAndClick(mainPageElements.accountMenu.button)
     await puppeteer.changeAccount(number)
   },
 
+  /**
+   * Import a MetaMask account using a private key
+   * @param {string} key - The private key to import
+   * @returns {Promise<boolean>} True if successful
+   */
   async importMetaMaskWalletUsingPrivateKey(key) {
     await puppeteer.waitAndClick(mainPageElements.accountMenu.button);
     await puppeteer.waitAndClickByText('.account-menu__item__text', 'Import Account');
     await puppeteer.waitAndType('#private-key-box', key);
-    await puppeteer.metamaskWindow().waitForTimeout(500);
+    await puppeteer.metamaskWindow().waitForTimeout(TIMEOUTS.SHORT);
     await puppeteer.waitAndClickByText(mainPageElements.accountMenu.importButton, 'Import');
-    await puppeteer.metamaskWindow().waitForTimeout(2000);
+    await puppeteer.metamaskWindow().waitForTimeout(TIMEOUTS.LONG);
     return true;
 },
 
+  /**
+   * Confirm the MetaMask welcome page
+   * @returns {Promise<boolean>} True if successful
+   */
   async confirmWelcomePage() {
     await module.exports.fixBlankPage();
     await puppeteer.waitAndClick(welcomePageElements.confirmButton);
@@ -100,54 +123,30 @@ module.exports = {
 
   async changeNetwork(network) {
     setNetwork(network);
+    const networkConfig = getNetworkConfig(network);
+    
     await puppeteer.waitAndClick(mainPageElements.networkSwitcher.button);
-    if (network === 'main' || network === 'mainnet') {
+    
+    // If it's a built-in network with an index, click by index
+    if (networkConfig.index !== null && networkConfig.index !== undefined) {
       await puppeteer.waitAndClick(
-        mainPageElements.networkSwitcher.networkButton(0),
-      );
-    } else if (network === 'ropsten') {
-      await puppeteer.waitAndClick(
-        mainPageElements.networkSwitcher.networkButton(1),
-      );
-    } else if (network === 'kovan') {
-      await puppeteer.waitAndClick(
-        mainPageElements.networkSwitcher.networkButton(2),
-      );
-    } else if (network === 'rinkeby') {
-      await puppeteer.waitAndClick(
-        mainPageElements.networkSwitcher.networkButton(3),
-      );
-    } else if (network === 'goerli') {
-      await puppeteer.waitAndClick(
-        mainPageElements.networkSwitcher.networkButton(4),
-      );
-    } else if (network === 'localhost') {
-      await puppeteer.waitAndClick(
-        mainPageElements.networkSwitcher.networkButton(5),
-      );
-    } else if (typeof network === 'object') {
-      await puppeteer.waitAndClickByText(
-        mainPageElements.networkSwitcher.dropdownMenuItem,
-        network.networkName,
+        mainPageElements.networkSwitcher.networkButton(networkConfig.index),
       );
     } else {
+      // For custom networks, click by name
+      const displayName = typeof network === 'object' ? network.networkName : network;
       await puppeteer.waitAndClickByText(
         mainPageElements.networkSwitcher.dropdownMenuItem,
-        network,
+        displayName,
       );
     }
 
-    if (typeof network === 'object') {
-      await puppeteer.waitForText(
-        mainPageElements.networkSwitcher.networkName,
-        network.networkName,
-      );
-    } else {
-      await puppeteer.waitForText(
-        mainPageElements.networkSwitcher.networkName,
-        network,
-      );
-    }
+    // Wait for network name to appear
+    const expectedName = typeof network === 'object' ? network.networkName : networkConfig.networkName;
+    await puppeteer.waitForText(
+      mainPageElements.networkSwitcher.networkName,
+      expectedName,
+    );
 
     return true;
   },
@@ -207,7 +206,7 @@ module.exports = {
     return true;
   },
   async acceptAccess() {
-    await puppeteer.metamaskWindow().waitForTimeout(3000);
+    await puppeteer.metamaskWindow().waitForTimeout(TIMEOUTS.EXTRA_LONG);
     const notificationPage = await puppeteer.switchToMetamaskNotification();
     await puppeteer.waitAndClick(
       notificationPageElements.nextButton,
@@ -217,12 +216,12 @@ module.exports = {
       permissionsPageElements.connectButton,
       notificationPage,
     );
-    await puppeteer.metamaskWindow().waitForTimeout(3000);
+    await puppeteer.metamaskWindow().waitForTimeout(TIMEOUTS.EXTRA_LONG);
     return true;
   },
   async confirmTransaction() {
     const isKovanTestnet = getNetwork().networkName === 'kovan';
-    await puppeteer.metamaskWindow().waitForTimeout(3000);
+    await puppeteer.metamaskWindow().waitForTimeout(TIMEOUTS.EXTRA_LONG);
     const notificationPage = await puppeteer.switchToMetamaskNotification();
     const currentGasFee = await puppeteer.waitAndGetValue(
       confirmPageElements.gasFeeInput,
@@ -237,22 +236,22 @@ module.exports = {
       notificationPage,
     );
     // metamask reloads popup after changing a fee, you have to wait for this event otherwise transaction will fail
-    await puppeteer.metamaskWindow().waitForTimeout(3000);
+    await puppeteer.metamaskWindow().waitForTimeout(TIMEOUTS.EXTRA_LONG);
     await puppeteer.waitAndClick(
       confirmPageElements.confirmButton,
       notificationPage,
     );
-    await puppeteer.metamaskWindow().waitForTimeout(3000);
+    await puppeteer.metamaskWindow().waitForTimeout(TIMEOUTS.EXTRA_LONG);
     return true;
   },
   async rejectTransaction() {
-    await puppeteer.metamaskWindow().waitForTimeout(3000);
+    await puppeteer.metamaskWindow().waitForTimeout(TIMEOUTS.EXTRA_LONG);
     const notificationPage = await puppeteer.switchToMetamaskNotification();
     await puppeteer.waitAndClick(
       confirmPageElements.rejectButton,
       notificationPage,
     );
-    await puppeteer.metamaskWindow().waitForTimeout(3000);
+    await puppeteer.metamaskWindow().waitForTimeout(TIMEOUTS.EXTRA_LONG);
     return true;
   },
   async getWalletAddress() {
@@ -270,7 +269,7 @@ module.exports = {
 
     await puppeteer.init();
     await puppeteer.assignWindows();
-    await puppeteer.metamaskWindow().waitForTimeout(1000);
+    await puppeteer.metamaskWindow().waitForTimeout(TIMEOUTS.MEDIUM);
     await puppeteer.metamaskWindow().bringToFront()
     if (
       (await puppeteer.metamaskWindow().$(unlockPageElements.unlockPage)) ===

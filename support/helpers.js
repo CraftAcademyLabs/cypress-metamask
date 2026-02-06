@@ -2,42 +2,25 @@ const axios = require('axios');
 const fs = require('fs');
 const zip = require('cross-zip');
 const path = require('path');
+const { getNetworkConfig } = require('./constants');
 
-let networkName = 'mainnet';
-let networkId = 1;
-let isTestnet = false;
+let currentNetwork = {
+  networkName: 'mainnet',
+  networkId: 1,
+  isTestnet: false,
+};
 
 module.exports = {
   setNetwork(network) {
-    if (network === 'main' || network === 'mainnet' || network === 1) {
-      networkName = 'mainnet';
-      networkId = 1;
-      isTestnet = false;
-    } else if (network === 'ropsten') {
-      networkName = 'ropsten';
-      networkId = 3;
-      isTestnet = true;
-    } else if (network === 'kovan') {
-      networkName = 'kovan';
-      networkId = 42;
-      isTestnet = true;
-    } else if (network === 'rinkeby') {
-      networkName = 'rinkeby';
-      networkId = 4;
-      isTestnet = true;
-    } else if (network === 'goerli') {
-      networkName = 'goerli';
-      networkId = 5;
-      isTestnet = true;
-    } else if (typeof network === 'object') {
-      networkName = network.networkName;
-      networkId = network.chainId;
-      isTestnet = network.isTestnet;
-    }
-    // todo: handle a case when setNetwork() is triggered by changeNetwork() with a string of already added custom networks
+    const config = getNetworkConfig(network);
+    currentNetwork = {
+      networkName: config.networkName,
+      networkId: config.networkId,
+      isTestnet: config.isTestnet,
+    };
   },
   getNetwork() {
-    return { networkName, networkId, isTestnet };
+    return currentNetwork;
   },
   async getMetamaskReleases(version) {
     let filename;

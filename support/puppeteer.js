@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer-core');
 const fetch = require('node-fetch');
+const { TIMEOUTS } = require('./constants');
 
 let puppeteerBrowser;
 let mainWindow;
@@ -72,7 +73,7 @@ module.exports = {
       { visible: true },
     );
     // puppeteer going too fast breaks metamask in corner cases
-    await page.waitForTimeout(300);
+    await page.waitForTimeout(TIMEOUTS.ELEMENT_WAIT);
   },
 
   async changeAccount(number, page = metamaskWindow) {
