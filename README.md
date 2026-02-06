@@ -2,6 +2,8 @@
 
 A Cypress plugin for automated testing of Web3 applications with MetaMask wallet integration. This plugin allows you to programmatically control MetaMask during your end-to-end tests, making it easy to test dApp interactions, transactions, and wallet flows.
 
+This plugin is based on the solutions brought by [Jakub Mucha - drptbl](https://github.com/drptbl) in [Synpress](https://github.com/Synthetixio/synpress), but with a more stripped down and (this is opinionated) simpler approach. The goal is to build a fairly straight forward solution that you can integrate into your own testing (end-to-end) flow.
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Features
@@ -483,7 +485,9 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## Credits
 
-This plugin is inspired by [Synpress](https://github.com/Synthetixio/synpress) by Jakub Mucha (drptbl), with a focus on simplicity and ease of integration.
+This plugin is based on the solutions brought by [Jakub Mucha - drptbl](https://github.com/drptbl) in [Synpress](https://github.com/Synthetixio/synpress), but with a more stripped down and (this is opinionated) simpler approach. The goal is to build a fairly straight forward solution that you can integrate into your own testing (end-to-end) flow.
+
+Special thanks to the Synpress project for pioneering MetaMask automation in Cypress and providing the foundation for this work.
 
 ## License
 
