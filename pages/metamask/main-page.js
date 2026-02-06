@@ -2,7 +2,7 @@ const networkSwitcher = {
   button: '.network-display',
   networkName: '.typography',
   dropdownMenuItem: '.dropdown-menu-item',
-  networkButton: number => `.dropdown-menu-item:nth-child(${3 + number})`,
+  networkButton: number => `.dropdown-menu-item:nth-child(${1 + number})`, // Updated for newer MetaMask
 };
 
 const walletOverview = '.wallet-overview';
@@ -14,6 +14,7 @@ const popup = {
 const accountMenu = {
   button: '.account-menu__icon',
   settingsButton: '.account-menu__item--clickable:nth-child(11)',
+  lockButton: '.account-menu__lock-button', // New: for locking MetaMask
   accountsSection: '.account-menu__accounts',
   firstAccount: '.account-menu__accounts:nth-child(1)',
   secondAccount: '.account-menu__accounts:nth-child(2)',
@@ -46,7 +47,7 @@ const options = {
 };
 
 const accountModal = {
-  walletAddressInput: '.account-modal input',
+  walletAddressInput: '.account-modal .qr-code__address', // Updated for newer MetaMask
   closeButton: '.account-modal__close',
 };
 

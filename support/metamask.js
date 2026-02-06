@@ -80,20 +80,46 @@ module.exports = {
     await puppeteer.waitAndClick(welcomePageElements.confirmButton);
     return true;
   },
+  
+  /**
+   * Lock MetaMask wallet
+   * @returns {Promise<boolean>} True if successful
+   */
+  async lock() {
+    await module.exports.fixBlankPage();
+    await puppeteer.waitAndClick(mainPageElements.accountMenu.button);
+    await puppeteer.waitAndClick(mainPageElements.accountMenu.lockButton);
+    return true;
+  },
 
+  /**
+   * Unlock MetaMask with a password
+   * @param {string} password - The password to unlock MetaMask
+   * @returns {Promise<boolean>} True if successful
+   */
   async unlock(password) {
     await module.exports.fixBlankPage();
     await puppeteer.waitAndType(unlockPageElements.passwordInput, password);
     await puppeteer.waitAndClick(unlockPageElements.unlockButton);
     return true;
   },
+  /**
+   * Import wallet using secret words (seed phrase)
+   * @param {string} secretWords - Space-separated seed phrase
+   * @param {string} password - Password for the wallet
+   * @returns {Promise<boolean>} True if successful
+   */
   async importWallet(secretWords, password) {
+    const words = secretWords.split(' ');
     await puppeteer.waitAndClick(firstTimeFlowPageElements.importWalletButton);
     await puppeteer.waitAndClick(metametricsPageElements.optOutAnalyticsButton);
-    await puppeteer.waitAndType(
-      firstTimeFlowFormPageElements.secretWordsInput,
-      secretWords,
-    );
+    
+    // For newer MetaMask versions, seed phrase is split into individual word inputs
+    for (const [index, word] of words.entries()) {
+      const selector = firstTimeFlowFormPageElements.secretWordsInput.replace('%', index);
+      await puppeteer.waitAndType(selector, word);
+    }
+    
     await puppeteer.waitAndType(
       firstTimeFlowFormPageElements.passwordInput,
       password,
@@ -252,6 +278,39 @@ module.exports = {
     await puppeteer.metamaskWindow().waitForTimeout(TIMEOUTS.EXTRA_LONG);
     return true;
   },
+  
+  /**
+   * Confirm EIP-712 V4 typed signature request
+   * @returns {Promise<boolean>} True if successful
+   */
+  async confirmTypedV4SignatureRequest() {
+    const { signaturePageElements } = require('../pages/metamask/notification-page');
+    await puppeteer.metamaskWindow().waitForTimeout(TIMEOUTS.EXTRA_LONG);
+    const notificationPage = await puppeteer.switchToMetamaskNotification();
+    await puppeteer.waitAndClick(
+      signaturePageElements.confirmTypedV4SignatureRequestButton,
+      notificationPage,
+    );
+    await puppeteer.metamaskWindow().waitForTimeout(TIMEOUTS.EXTRA_LONG);
+    return true;
+  },
+  
+  /**
+   * Reject EIP-712 V4 typed signature request
+   * @returns {Promise<boolean>} True if successful
+   */
+  async rejectTypedV4SignatureRequest() {
+    const { signaturePageElements } = require('../pages/metamask/notification-page');
+    await puppeteer.metamaskWindow().waitForTimeout(TIMEOUTS.EXTRA_LONG);
+    const notificationPage = await puppeteer.switchToMetamaskNotification();
+    await puppeteer.waitAndClick(
+      signaturePageElements.rejectTypedV4SignatureRequestButton,
+      notificationPage,
+    );
+    await puppeteer.metamaskWindow().waitForTimeout(TIMEOUTS.EXTRA_LONG);
+    return true;
+  },
+  
   async getWalletAddress() {
     await puppeteer.waitAndClick(mainPageElements.options.button);
     await puppeteer.waitAndClick(mainPageElements.options.accountDetailsButton);
@@ -273,6 +332,12 @@ module.exports = {
       (await puppeteer.metamaskWindow().$(unlockPageElements.unlockPage)) ===
       null
     ) {
+      // Check if wallet is already set up (prevents duplicate setup errors)
+      if ((await puppeteer.metamaskWindow().$(mainPageElements.walletOverview)) !== null) {
+        await puppeteer.switchToCypressWindow();
+        return true;
+      }
+      
       await module.exports.confirmWelcomePage();
       await module.exports.importWallet(secretWords, password);
       if (isCustomNetwork) {

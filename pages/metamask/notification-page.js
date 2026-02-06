@@ -14,6 +14,12 @@ const totalLabel = `${confirmPageContent} div:nth-child(2) > .confirm-detail-row
 const rejectButton = `${confirmPageContent} [data-testid="page-container-footer-cancel"]`;
 const confirmButton = `${confirmPageContent} [data-testid="page-container-footer-next"]`;
 
+// Signature request elements
+const confirmSignatureRequestButton = `${notificationPage} .request-signature__footer__sign-button`;
+const rejectSignatureRequestButton = `${notificationPage} .request-signature__footer__cancel-button`;
+const confirmTypedV4SignatureRequestButton = `${notificationPage} .btn-primary`; // For EIP-712 v4
+const rejectTypedV4SignatureRequestButton = `${notificationPage} .btn-default`; // For EIP-712 v4
+
 module.exports.notificationPageElements = {
   notificationPage,
   nextButton,
@@ -35,4 +41,11 @@ module.exports.confirmPageElements = {
   totalLabel,
   rejectButton,
   confirmButton,
+};
+
+module.exports.signaturePageElements = {
+  confirmSignatureRequestButton,
+  rejectSignatureRequestButton,
+  confirmTypedV4SignatureRequestButton,
+  rejectTypedV4SignatureRequestButton,
 };

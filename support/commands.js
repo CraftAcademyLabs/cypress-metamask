@@ -13,7 +13,10 @@ const simpleCommands = [
   'acceptMetamaskAccess',
   'confirmMetamaskTransaction',
   'rejectMetamaskTransaction',
+  'confirmMetamaskTypedV4SignatureRequest', // New: EIP-712 V4 signature
+  'rejectMetamaskTypedV4SignatureRequest', // New: EIP-712 V4 signature
   'switchToMetamaskNotification',
+  'lockMetamask', // New: lock MetaMask
   'getNetwork',
 ];
 
