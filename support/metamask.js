@@ -115,8 +115,11 @@ module.exports = {
     await puppeteer.waitAndClick(metametricsPageElements.optOutAnalyticsButton);
     
     // For newer MetaMask versions, seed phrase is split into individual word inputs
+    // Each word gets its own input field with index-based selector
+    const baseSelector = firstTimeFlowFormPageElements.secretWordsInput;
     for (const [index, word] of words.entries()) {
-      const selector = firstTimeFlowFormPageElements.secretWordsInput.replace('%', index);
+      // Use template replacement to construct selector for each word's input
+      const selector = baseSelector.split('%').join(index.toString());
       await puppeteer.waitAndType(selector, word);
     }
     
