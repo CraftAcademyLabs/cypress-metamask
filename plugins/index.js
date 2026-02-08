@@ -77,6 +77,10 @@ module.exports = (on, config) => {
       const confirmed = await metamask.confirmWelcomePage();
       return confirmed;
     },
+    async lockMetamask() {
+      const locked = await metamask.lock();
+      return locked;
+    },
     async unlockMetamask(password) {
       if (process.env.PASSWORD) {
         password = process.env.PASSWORD;
@@ -124,6 +128,14 @@ module.exports = (on, config) => {
     },
     async rejectMetamaskTransaction() {
       const rejected = await metamask.rejectTransaction();
+      return rejected;
+    },
+    async confirmMetamaskTypedV4SignatureRequest() {
+      const confirmed = await metamask.confirmTypedV4SignatureRequest();
+      return confirmed;
+    },
+    async rejectMetamaskTypedV4SignatureRequest() {
+      const rejected = await metamask.rejectTypedV4SignatureRequest();
       return rejected;
     },
     async getMetamaskWalletAddress() {

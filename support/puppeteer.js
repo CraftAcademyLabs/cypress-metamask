@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer-core');
 const fetch = require('node-fetch');
+const { TIMEOUTS } = require('./constants');
 
 let puppeteerBrowser;
 let mainWindow;
@@ -15,18 +16,34 @@ module.exports = {
   metamaskWindow() {
     return metamaskWindow;
   },
+  /**
+   * Initialize Puppeteer connection to Chrome debugging port
+   * @returns {Promise<boolean>} True if connection successful
+   * @throws {Error} If unable to connect to Chrome
+   */
   async init() {
-    const debuggerDetails = await fetch('http://localhost:9222/json/version'); //DevSkim: ignore DS137138
-    const debuggerDetailsConfig = await debuggerDetails.json();
-    const webSocketDebuggerUrl = debuggerDetailsConfig.webSocketDebuggerUrl;
+    try {
+      const debuggerDetails = await fetch('http://localhost:9222/json/version'); //DevSkim: ignore DS137138
+      const debuggerDetailsConfig = await debuggerDetails.json();
+      const webSocketDebuggerUrl = debuggerDetailsConfig.webSocketDebuggerUrl;
 
-    puppeteerBrowser = await puppeteer.connect({
-      browserWSEndpoint: webSocketDebuggerUrl,
-      ignoreHTTPSErrors: true,
-      defaultViewport: null,
-    });
-    return puppeteerBrowser.isConnected();
+      puppeteerBrowser = await puppeteer.connect({
+        browserWSEndpoint: webSocketDebuggerUrl,
+        ignoreHTTPSErrors: true,
+        defaultViewport: null,
+      });
+      return puppeteerBrowser.isConnected();
+    } catch (error) {
+      throw new Error(`Failed to initialize Puppeteer: ${error.message}. Make sure Chrome is running with --remote-debugging-port=9222`);
+    }
   },
+  /**
+   * Assign windows to mainWindow and metamaskWindow variables
+   * Identifies windows by URL patterns (integration for main, extension for metamask)
+   * @returns {Promise<boolean>} Always returns true; logs warning if windows not found
+   * @note This function returns true even when windows aren't fully assigned to allow
+   *       graceful degradation. Check console warnings if experiencing issues.
+   */
   async assignWindows() {
     let pages = await puppeteerBrowser.pages();
     for (const page of pages) {
@@ -36,6 +53,11 @@ module.exports = {
         metamaskWindow = page;
       }
     }
+    
+    if (!mainWindow || !metamaskWindow) {
+      console.warn('Warning: Could not find all required windows. Main:', !!mainWindow, 'MetaMask:', !!metamaskWindow);
+    }
+    
     return true;
   },
   async getBrowser() {
@@ -49,14 +71,29 @@ module.exports = {
       metamaskWindow,
     };
   },
+  
+  /**
+   * Switch focus to the Cypress test window
+   * @returns {Promise<boolean>} True if successful
+   */
   async switchToCypressWindow() {
     await mainWindow.bringToFront();
     return true;
   },
+  
+  /**
+   * Switch focus to the MetaMask extension window
+   * @returns {Promise<boolean>} True if successful
+   */
   async switchToMetamaskWindow() {
     await metamaskWindow.bringToFront();
     return true;
   },
+  
+  /**
+   * Switch to MetaMask notification popup window
+   * @returns {Promise<Page|undefined>} The notification page if found
+   */
   async switchToMetamaskNotification() {
     let pages = await puppeteerBrowser.pages();
     for (const page of pages) {
@@ -66,15 +103,26 @@ module.exports = {
       }
     }
   },
+  
+  /**
+   * Wait for an element to be visible and ready
+   * @param {string} selector - CSS selector for the element
+   * @param {Page} page - Puppeteer page object (defaults to metamaskWindow)
+   */
   async waitFor(selector, page = metamaskWindow) {
     await page.waitForFunction(
       `document.querySelector('${selector}') && document.querySelector('${selector}').clientHeight != 0`,
       { visible: true },
     );
     // puppeteer going too fast breaks metamask in corner cases
-    await page.waitForTimeout(300);
+    await page.waitForTimeout(TIMEOUTS.ELEMENT_WAIT);
   },
 
+  /**
+   * Change to a specific account in MetaMask
+   * @param {number} number - Account number to switch to
+   * @param {Page} page - Puppeteer page object (defaults to metamaskWindow)
+   */
   async changeAccount(number, page = metamaskWindow) {
     await page.evaluate(
       ({ number }) => {
@@ -85,6 +133,11 @@ module.exports = {
     )
   },
 
+  /**
+   * Wait for an element and click it
+   * @param {string} selector - CSS selector for the element
+   * @param {Page} page - Puppeteer page object (defaults to metamaskWindow)
+   */
   async waitAndClick(selector, page = metamaskWindow) {
     await module.exports.waitFor(selector, page);
     await page.evaluate(
@@ -93,6 +146,12 @@ module.exports = {
     );
   },
 
+  /**
+   * Wait for an element and click it by matching text content
+   * @param {string} selector - CSS selector for the elements to search
+   * @param {string} elementText - Text content to match
+   * @param {Page} page - Puppeteer page object (defaults to metamaskWindow)
+   */
   async waitAndClickByText(selector, elementText, page = metamaskWindow) {
     await module.exports.waitFor(selector, page);
     await page.evaluate(

@@ -9,12 +9,12 @@ const importWalletButton = `${firstTimeFlowPage} .first-time-flow__button`;
 const metametricsPage = '.metametrics-opt-in';
 const optOutAnalyticsButton = `${metametricsPage} [data-testid="page-container-footer-cancel"]`;
 
-const firstTimeFlowFormPage = '.first-time-flow__form';
-const secretWordsInput = `${firstTimeFlowFormPage} .first-time-flow__seedphrase input`;
+const firstTimeFlowFormPage = '.create-new-vault__form'; // Updated for newer MetaMask
+const secretWordsInput = `${firstTimeFlowFormPage} .import-srp__srp-word input[data-testid="import-srp__srp-word-%"]`; // Split per word - % placeholder replaced with word index (0-based) at runtime
 const passwordInput = `${firstTimeFlowFormPage} #password`;
 const confirmPasswordInput = `${firstTimeFlowFormPage} #confirm-password`;
-const termsCheckbox = `${firstTimeFlowFormPage} .first-time-flow__terms`;
-const importButton = `${firstTimeFlowFormPage} .first-time-flow__button`;
+const termsCheckbox = `${firstTimeFlowFormPage} .create-new-vault__terms input`; // Updated for newer MetaMask
+const importButton = `${firstTimeFlowFormPage} .create-new-vault__submit-button`; // Updated for newer MetaMask
 
 const endOfFlowPage = '.end-of-flow';
 const allDoneButton = `${endOfFlowPage} .first-time-flow__button`;

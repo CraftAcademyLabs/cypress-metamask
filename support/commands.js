@@ -1,69 +1,65 @@
-Cypress.Commands.add('initPuppeteer', () => {
-  return cy.task('initPuppeteer');
+/**
+ * Cypress commands for MetaMask automation
+ * Commands are dynamically generated to avoid code duplication
+ */
+
+// Simple commands that just proxy to tasks with no parameters
+const simpleCommands = [
+  'initPuppeteer',
+  'assignWindows',
+  'confirmMetamaskWelcomePage',
+  'switchToCypressWindow',
+  'switchToMetamaskWindow',
+  'acceptMetamaskAccess',
+  'confirmMetamaskTransaction',
+  'rejectMetamaskTransaction',
+  'confirmMetamaskTypedV4SignatureRequest', // New: EIP-712 V4 signature
+  'rejectMetamaskTypedV4SignatureRequest', // New: EIP-712 V4 signature
+  'switchToMetamaskNotification',
+  'lockMetamask', // New: lock MetaMask
+  'getNetwork',
+];
+
+// Generate simple commands dynamically
+simpleCommands.forEach(commandName => {
+  Cypress.Commands.add(commandName, () => {
+    return cy.task(commandName);
+  });
 });
 
-Cypress.Commands.add('assignWindows', () => {
-  return cy.task('assignWindows');
+// Commands with parameters
+const parameterizedCommands = [
+  { name: 'importMetamaskWallet', params: ['secretWords', 'password'] },
+  { name: 'importMetaMaskWalletUsingPrivateKey', params: ['key'] },
+  { name: 'addMetamaskNetwork', params: ['network'] },
+  { name: 'changeMetamaskNetwork', params: ['network'] },
+  { name: 'unlockMetamask', params: ['password'] },
+  { name: 'setupMetamask', params: ['secretWords', 'network', 'password'] },
+  { name: 'changeAccount', params: ['number'] },
+];
+
+// Generate parameterized commands dynamically
+parameterizedCommands.forEach(({ name, params }) => {
+  Cypress.Commands.add(name, (...args) => {
+    // Map arguments to parameter object
+    // If first arg is already an object with the expected keys, use it directly
+    // Otherwise, map positional arguments to named parameters
+    const paramObject = params.length === 1 && typeof args[0] === 'object' && !Array.isArray(args[0])
+      ? args[0]
+      : params.reduce((obj, param, index) => {
+          obj[param] = args[index];
+          return obj;
+        }, {});
+    
+    return cy.task(name, paramObject);
+  });
 });
 
-Cypress.Commands.add('confirmMetamaskWelcomePage', () => {
-  return cy.task('confirmMetamaskWelcomePage');
-});
-
-Cypress.Commands.add(
-  'importMetamaskWallet',
-  (secretWords, password) => {
-    return cy.task('importMetamaskWallet', { secretWords, password });
-  },
-);
-
-Cypress.Commands.add(
-  'importMetaMaskWalletUsingPrivateKey',
-  (key) => {
-    return cy.task('importMetaMaskWalletUsingPrivateKey', { key });
-  },
-);
-
-Cypress.Commands.add('addMetamaskNetwork', network => {
-  return cy.task('addMetamaskNetwork', network);
-});
-
-Cypress.Commands.add('changeMetamaskNetwork', network => {
-  return cy.task('changeMetamaskNetwork', network);
-});
-
+// Special commands that need custom logic
 Cypress.Commands.add('getMetamaskWalletAddress', () => {
   cy.task('getMetamaskWalletAddress').then(address => {
     return address;
   });
-});
-
-Cypress.Commands.add('switchToCypressWindow', () => {
-  return cy.task('switchToCypressWindow');
-});
-
-Cypress.Commands.add('switchToMetamaskWindow', () => {
-  return cy.task('switchToMetamaskWindow');
-});
-
-Cypress.Commands.add('acceptMetamaskAccess', () => {
-  return cy.task('acceptMetamaskAccess');
-});
-
-Cypress.Commands.add('confirmMetamaskTransaction', () => {
-  return cy.task('confirmMetamaskTransaction');
-});
-
-Cypress.Commands.add('rejectMetamaskTransaction', () => {
-  return cy.task('rejectMetamaskTransaction');
-});
-
-Cypress.Commands.add('switchToMetamaskNotification', () => {
-  return cy.task('switchToMetamaskNotification');
-});
-
-Cypress.Commands.add('unlockMetamask', (password) => {
-  return cy.task('unlockMetamask', password);
 });
 
 Cypress.Commands.add('fetchMetamaskWalletAddress', () => {
@@ -72,20 +68,4 @@ Cypress.Commands.add('fetchMetamaskWalletAddress', () => {
   });
 });
 
-Cypress.Commands.add(
-  'setupMetamask',
-  (secretWords, network, password) => {
-    return cy.task('setupMetamask', { secretWords, network, password });
-  },
-);
-
-Cypress.Commands.add('getNetwork', () => {
-  return cy.task('getNetwork');
-});
-
-Cypress.Commands.add(
-  'changeAccount',
-  (number) => {
-    return cy.task('changeAccount', { number })
-  })
 
