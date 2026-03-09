@@ -10,12 +10,14 @@
 
 <body>
   <h1>MetaMask Demo</h1>
+  <button id="connect">Connect</button>
   <div id="message"></div>
   <script src="https://cdn.ethers.io/lib/ethers-5.0.umd.min.js" type="application/javascript"></script>
   <script src="https://unpkg.com/@metamask/detect-provider/dist/detect-provider.min.js"></script>
   <script type="module">
     const provider = await detectEthereumProvider()
     const messageNode = document.getElementById('message')
+    const connectButton = document.getElementById('connect')
     const { ethers } = window.ethers
     if (provider) {
       !provider.isConnected() &&  await window.ethereum.enable()
@@ -29,6 +31,12 @@
     window.ethereum.on('accountsChanged', (accounts) => {
       window.location.reload()
     })
+
+    connectButton.addEventListener('click', async () => {
+      const accounts = await window.ethereum.request({ method: "eth_requestAccounts" })
+    })
+
+
   </script>
 </body>
 
